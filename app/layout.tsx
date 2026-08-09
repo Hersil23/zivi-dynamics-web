@@ -76,7 +76,9 @@ const organization = {
   taxID: "J-508175123",
   url: siteUrl,
   logo: `${siteUrl}/brand/zivi-mark-real-v2.png`,
-  image: `${siteUrl}/opengraph-image`,
+  // Con .png: en Vercel /opengraph-image era una funcion que generaba la imagen
+  // al vuelo; aqui es un fichero estatico y sin extension da 404.
+  image: `${siteUrl}/opengraph-image.png`,
   email: "contacto@zividynamics.com",
   telephone: "+58 412 706 5848",
   address: {

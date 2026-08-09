@@ -32,8 +32,15 @@ export function ContactForm() {
         startDate: limpiar(raw.startDate, 80), message: limpiar(raw.message, 3000),
       };
       const correoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email);
-      if (!d.name || !correoValido || !d.phone || !d.service || d.message.length < 20) {
-        throw new Error("Revisa los campos obligatorios y describe el proyecto con mayor detalle.");
+      // El <form> lleva noValidate, que anula el `required` nativo del navegador
+      // — incluido el de la casilla de consentimiento. Y sin atributo `name` esa
+      // casilla ni siquiera entraba en el FormData: se podia enviar sin aceptar
+      // nada. La politica dice que se recoge consentimiento; aqui se recoge.
+      const consintio = raw.consent === "si";
+      if (!d.name || !correoValido || !d.phone || !d.service || d.message.length < 20 || !consintio) {
+        throw new Error(consintio
+          ? "Revisa los campos obligatorios y describe el proyecto con mayor detalle."
+          : "Debes aceptar la política de privacidad para continuar.");
       }
 
       const texto = [
@@ -64,7 +71,7 @@ export function ContactForm() {
     <label>Fecha estimada de inicio<input name="startDate" type="month"/></label>
     <label>Descripción del proyecto<textarea name="message" required minLength={20} rows={6} placeholder="Describe el problema, el proceso actual, los usuarios y el resultado que esperas obtener."/></label>
     <label className="form-honeypot" aria-hidden="true">Sitio web<input name="website" tabIndex={-1} autoComplete="off"/></label>
-    <label className="form-consent"><input type="checkbox" required/><span>Acepto que Zivi Dynamics utilice estos datos para responder mi solicitud, conforme a la política de privacidad.</span></label>
+    <label className="form-consent"><input type="checkbox" name="consent" value="si" required/><span>Acepto que Zivi Dynamics utilice estos datos para responder mi solicitud, conforme a la política de privacidad.</span></label>
     <button className="btn form-submit" type="submit" disabled={state === "sending"}>{state === "sending" ? "Procesando solicitud…" : "Enviar solicitud"}</button>
     {state === "ready" && <div className="form-fallback"><p className="form-status success">✓ Tu solicitud quedó lista con todos los datos.</p><p>Pulsa para enviarla por WhatsApp y te respondemos de inmediato.</p><a className="btn secondary" href={fallbackUrl} target="_blank" rel="noreferrer">Enviar por WhatsApp</a></div>}
     {state === "error" && <p className="form-status error">{message}</p>}
