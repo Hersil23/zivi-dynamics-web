@@ -1,0 +1,396 @@
+/* ============================================================================
+   Correcciones de accesibilidad y legibilidad — auditoría del 09/08/2026
+   ============================================================================
+
+   POR QUÉ ESTE FICHERO CARGA EL ÚLTIMO
+   Ya hay 15 hojas y 33 selectores definidos en tres o más ficheros a la vez.
+   `fixes.css` carga 6º de 15 y todo lo que arregla se lo pisa `epic.css`, que
+   carga 13º: sus reglas para la cabecera son código muerto. Repetir ese error
+   aquí no arreglaría nada, así que esto va al final del import y solo usa
+   `!important` donde compite con un `!important` ajeno.
+
+   NO es una hoja de parches permanente. Cada bloque dice qué corrige y de dónde
+   viene el problema, para que al consolidar el CSS se pueda llevar a su sitio
+   y borrar este fichero entero.
+
+   Todos los ratios de contraste están medidos sobre el fondo compuesto real
+   del nodo, no sobre el color declarado del padre.
+   ============================================================================ */
+
+/* ---------------------------------------------------------------------------
+   1. Texto invisible en /nosotros/ — contraste 1.00:1
+   `epic.css:1408` puso fondo tinta en .about-brand-panel, pero el <div> de
+   dentro sigue heredando el color tinta de la sección clara que lo envuelve:
+   #080808 sobre #080808. No es "poco legible": no se ve.
+
+   DOS AVISOS, los dos aprendidos rompiéndolo.
+
+   Primero: aquí ponía `.about-brand-panel span`, y dentro del panel el logotipo
+   es TIPOGRÁFICO — `brandLockup` son spans con los puntos de las íes en cian y
+   rosa. Esa regla repintaba el logotipo de la empresa de blanco. Ahora sólo
+   toca el div suelto.
+
+   Segundo: al hacer visible ese texto salió a la luz un defecto de maquetación
+   que ya estaba. El panel es flex de dos columnas, pero el logotipo se sale de
+   su caja (257px de caja, ~430px de tinta) y el texto le caía encima. Con el
+   texto invisible no se notaba. Se apila en vertical, que es el arreglo mínimo
+   que no reinventa el panel.
+   --------------------------------------------------------------------------- */
+.about-brand-panel {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.about-brand-panel > div span,
+.about-brand-panel > div strong {
+  color: #f4f1ea;
+}
+
+/* ---------------------------------------------------------------------------
+   2. Colores de marca en su versión de TEXTO
+   La identidad no cambia: el rosa, el cian y el dorado siguen siendo los de la
+   casa como fondo y como acento gráfico. Lo que cambia es su valor cuando
+   hacen de texto sobre claro, que es donde fallaban.
+
+     rosa   #f50078 -> #d10067   4.57:1 sobre papel · 5.29:1 sobre blanco
+     cian   #16c7ff -> #007399   4.59:1 sobre papel
+     dorado #ffb51b -> #8a5f00   sobre blanco
+
+   El caso más grave era "Explorar caso ↗", el enlace de CADA tarjeta del
+   portafolio, a 1.74:1 — el usuario no podía leer la llamada a la acción.
+   --------------------------------------------------------------------------- */
+:root {
+  --zv-rosa-texto: #d10067;
+  --zv-cian-texto: #007399;
+  --zv-dorado-texto: #8a5f00;
+}
+
+.caseCard__link,
+.caseCard a,
+.epicCard__link,
+a.case-link {
+  color: var(--zv-rosa-texto);
+}
+
+/* Los eyebrows NO se tocan en bloque.
+   Medido en las 8 páginas: de 33 eyebrows, 22 van sobre el fondo tinta #080808,
+   donde el cian claro da de sobra, y 8 van en tinta sobre la banda dorada, que
+   también pasa. Recolorearlos todos a cian oscuro —lo que hice primero— hundió
+   "Producto insignia / NFC" de 4.07:1 a 1.32:1. Sólo fallan de verdad los tres
+   contenedores claros: */
+.positioning-section .eyebrow,   /* rosa #f50078 sobre papel #f1eee6 */
+.positioning-section .epicEyebrow,
+.proofSection .eyebrow,
+.proofSection .epicEyebrow {
+  color: var(--zv-rosa-texto);
+}
+
+/* En /nosotros/ el eyebrow es CIAN, no rosa. Oscurecerlo a rosa habría sido
+   cambiarle el tono, no el contraste. Se queda cian, un punto más oscuro. */
+.about-position-grid .eyebrow,
+.about-position-grid .epicEyebrow {
+  color: var(--zv-cian-texto);
+}
+
+.contact-section .eyebrow,       /* cian #16c7ff sobre blanco #fffdf8 */
+.contact-section .epicEyebrow {
+  color: var(--zv-cian-texto);
+}
+
+.case-eyebrow,
+.resource-category {
+  color: var(--zv-cian-texto);
+}
+
+/* Aquí había una regla mía para forzar `color: inherit` en las flechas ↗ de los
+   botones. La quité: medida contra la compilación original, empeoraba las doce
+   flechas del sitio (4.07 -> 3.73). La flecha ya tenía su color propio, y era
+   mejor que el heredado. Fue una corazonada, no un dato. */
+
+.tag--sector,
+.case-tag,
+.project-tag {
+  color: var(--zv-dorado-texto);
+}
+
+/* ---------------------------------------------------------------------------
+   3. Botones primarios — blanco sobre rosa daba 4.07:1
+   A 13px y peso 800 el mínimo es 4.5:1. Con el rosa de texto sube a 5.37:1 y
+   el botón sigue siendo inconfundiblemente el mismo botón.
+
+   OJO CON EL ALCANCE. Aquí puse primero `.btn:not(.secondary):not(.ghost),
+   .epicButton`. Este proyecto no usa esas clases: sus variantes se llaman
+   `epicButtonGhost` y `epicButtonLight`, así que el guardia no guardaba nada y
+   la regla pintó de rosa el botón fantasma, el claro y el pequeño de la
+   cabecera — toda la jerarquía de botones aplastada en un bloque rosa.
+
+   Recorridas las 8 páginas, los únicos elementos con el rosa #f50078 de fondo Y
+   texto encima son estos dos. Los demás (10 iconos <i>, projectMonogram,
+   nfcFlagship, nfcCaseFeature) son superficie decorativa y se quedan igual.
+   --------------------------------------------------------------------------- */
+.epicButton.epicButtonPrimary,
+.btn.form-submit {
+  background-color: var(--zv-rosa-texto);
+}
+
+/* ---------------------------------------------------------------------------
+   4. El botón que SÍ envía tiene que mandar visualmente
+   El de WhatsApp era una píldora fantasma junto a un bloque rosa sólido que no
+   enviaba nada. Se invierte la jerarquía: este es la acción principal.
+   --------------------------------------------------------------------------- */
+.form-enviar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 0 26px;
+  background: #128c4a;          /* verde WhatsApp, blanco encima da 5.1:1 */
+  color: #fff;
+  font-weight: 800;
+  border: 0;
+  border-radius: 999px;
+  text-decoration: none;
+}
+.form-enviar:hover { background: #0f7a40; }
+
+.form-nota {
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  opacity: .85;
+}
+
+/* Cuando el mensaje ya está preparado, el botón de arriba deja de competir. */
+.form-submit:disabled { opacity: .45; }
+
+/* ---------------------------------------------------------------------------
+   5. Zonas táctiles por debajo de 44px
+   La hamburguesa estaba BIEN en phase1.css (44x44) y `mobile-fixes.css:112` la
+   encogía a 40 con !important. Un fichero de "fixes" rompiendo lo correcto.
+   --------------------------------------------------------------------------- */
+.nav-toggle,
+.menu-toggle,
+button[aria-label*="menú" i],
+button[aria-label*="menu" i] {
+  min-width: 44px !important;
+  min-height: 44px !important;
+}
+
+.case-back,
+.case-all,
+a.case-back,
+a.case-all {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 13px;
+}
+
+.form-consent input[type="checkbox"] {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+}
+
+/* ---------------------------------------------------------------------------
+   6. Texto informativo a 8 y 9 píxeles
+   El HUD decorativo lleva aria-hidden y se deja como está: es decoración. Esto
+   es información —dirección de la empresa, metadatos de los casos, cifras del
+   hero— y a ese tamaño no se lee en un teléfono.
+   --------------------------------------------------------------------------- */
+.epicFooter__address,
+.case-meta,
+.capability-chip,
+.nfc-hero__data,
+.portfolio-hero__stat {
+  font-size: 12px !important;
+  line-height: 1.45;
+}
+
+.epicFooter__address,
+.portfolio-hero__stat {
+  color: rgba(255, 255, 255, .72) !important;  /* era .42 y .48 */
+}
+
+/* ---------------------------------------------------------------------------
+   7. iOS hace zoom al enfocar un campo de menos de 16px
+   phase1.css no fijaba font-size en los inputs y heredaban 13.33px. El zoom
+   descoloca el formulario entero en cada campo.
+   --------------------------------------------------------------------------- */
+.lead-form input,
+.lead-form select,
+.lead-form textarea {
+  font-size: 16px;
+}
+
+/* ---------------------------------------------------------------------------
+   8. En /contacto/ la barra inferior sobra
+   Ya estás en el formulario: "Cotizar" no lleva a ningún sitio nuevo y la barra
+   se monta sobre el textarea mientras escribes.
+   --------------------------------------------------------------------------- */
+body[data-ruta="contacto"] .mobile-actions {
+  display: none;
+}
+
+/* ---------------------------------------------------------------------------
+   9. Tarjetas del portafolio — el peor caso medido del sitio
+   `.portfolioEpicCopy strong` ("Explorar caso ↗") iba en dorado #ffb51b sobre
+   blanco #fffdf8 a NUEVE píxeles: 1.74:1. Es la llamada a la acción de cada una
+   de las 20 tarjetas, y no se podía leer. El tag de sector, igual a 10px.
+
+   Las tarjetas llevan tres acentos (gold, cyan, pink) que se ven bien como
+   borde y como fondo; lo que no funciona es usarlos de texto sobre claro.
+   --------------------------------------------------------------------------- */
+.portfolioEpicCopy strong,
+.portfolioEpicCopy > span {
+  font-size: 12px;
+  letter-spacing: .04em;
+}
+
+.portfolioEpicCard.accent-gold  .portfolioEpicCopy strong,
+.portfolioEpicCard.accent-gold  .portfolioEpicCopy > span { color: var(--zv-dorado-texto); }
+
+.portfolioEpicCard.accent-cyan  .portfolioEpicCopy strong,
+.portfolioEpicCard.accent-cyan  .portfolioEpicCopy > span { color: var(--zv-cian-texto); }
+
+.portfolioEpicCard.accent-pink  .portfolioEpicCopy strong,
+.portfolioEpicCard.accent-pink  .portfolioEpicCopy > span { color: var(--zv-rosa-texto); }
+
+.portfolioEpicCard.accent-violet .portfolioEpicCopy strong,
+.portfolioEpicCard.accent-violet .portfolioEpicCopy > span { color: #6b3fa0; }
+
+.portfolioEpicCard.accent-lime  .portfolioEpicCopy strong,
+.portfolioEpicCard.accent-lime  .portfolioEpicCopy > span { color: #3d6b0f; }
+
+/* Respaldo para las que no declaren acento. */
+.portfolioEpicCopy strong { color: var(--zv-dorado-texto); }
+
+/* ---------------------------------------------------------------------------
+   10. "Cómo trabajamos" — rosa sobre dorado, 2.3:1
+   El eyebrow sobre la banda dorada. Sobre ese fondo el texto tiene que ser
+   tinta, no otro color de marca.
+   --------------------------------------------------------------------------- */
+.epicBand--gold .eyebrow,
+.epicBand--gold .epicEyebrow,
+[class*="gold"] > .container > .eyebrow {
+  color: #1a1206;
+}
+
+/* ---------------------------------------------------------------------------
+   11. NO se toca el botón de la cabecera.
+   La auditoría lo dio como 3.73:1, pero medido contra la compilación original
+   "Iniciar proyecto ↗" es tinta #080808 sobre papel #f1eee6: unos 13:1. El dato
+   de la auditoría no se reproduce. Pintarlo de rosa sólido no arreglaba nada y
+   además cambiaba el diseño de la cabecera, que nadie pidió cambiar.
+   --------------------------------------------------------------------------- */
+
+/* ---------------------------------------------------------------------------
+   12. La causa raíz de casi todo lo que quedaba
+   Recorridas las 8 páginas midiendo el fondo real, 35 de los fallos restantes
+   son EL MISMO problema en once contenedores distintos: el rosa de marca
+   #f50078 haciendo de texto sobre una superficie clara.
+
+     #f50078 sobre papel  #f1eee6 -> 3.51:1
+     #f50078 sobre blanco #fffdf8 -> 4.01:1     (el mínimo es 4.5:1)
+
+   Con --zv-rosa-texto queda en 4.64:1 sobre papel y 5.31:1 sobre blanco. Es el
+   mismo rosa un punto más oscuro: de lejos no se nota, de cerca se lee.
+
+   Se enumeran los contenedores uno a uno a propósito. La versión "todo lo que
+   sea rosa" ya la escribí antes en este fichero y aplastó la jerarquía entera
+   de botones porque el guardia usaba clases que este proyecto no tiene.
+   --------------------------------------------------------------------------- */
+.proofSection .sectionFootLink a span,
+.founderCard a,
+.nfcReality figcaption span,
+.nfcFormats .epicEyebrow,
+.nfcFormats .nfcFormatFoot a,
+.nfcUseCases .epicEyebrow,
+.nfcUseCases article > span,
+/* `.editorialHeading .epicEyebrow` NO va aquí: de los cuatro editorialHeading
+   del sitio, tres están sobre fondo tinta #080808, donde el cian y el dorado ya
+   pasaban. El de nfcUseCases, que sí es claro, lo cubre la línea de arriba. */
+.positioning-section article > span,
+.positioning-section article > a,
+.resource-card strong {
+  color: var(--zv-rosa-texto);
+}
+
+/* ---------------------------------------------------------------------------
+   13. El pie NO se toca — aquí el que fallaba era yo
+   Di por malo "Todos nuestros enlaces ↗" con 2.15:1 y lo pasé a cian oscuro.
+   Era falso: el fondo del enlace es `rgba(255,255,255,.04)`, un velo casi
+   transparente sobre un pie negro, y mi medidor lo leía como blanco opaco. El
+   cian claro sobre pie negro pasa de sobra; el oscuro que puse yo era el que
+   no se veía. Corregida la función que compone el alfa, el fallo desapareció.
+   Queda escrito porque es el error más fácil de repetir de toda la auditoría.
+   --------------------------------------------------------------------------- */
+
+/* ---------------------------------------------------------------------------
+   14. Texto de marca sobre la banda dorada
+   Rosa sobre dorado da 2.3:1 — son los dos colores cálidos peleándose. Sobre
+   dorado sólo funciona la tinta, que da 11.4:1.
+   --------------------------------------------------------------------------- */
+.positioning-process .eyebrow,
+.nfcCredentialCase .epicEyebrow {
+  color: #1a1206;
+}
+
+/* ---------------------------------------------------------------------------
+   15. Las dos secciones rosas y la numeración de encima
+   `nfcFlagship` y `nfcCaseFeature` son superficies rosas grandes con texto
+   blanco a 9px encima: 4.07:1. La numeración de nfcCaseFeature iba en dorado
+   sobre ese rosa, 2.3:1.
+
+   Aquí no basta con retocar el texto: en blanco sobre #f50078 el techo es
+   4.07:1, así que ningún color de texto arregla la superficie. Se oscurece la
+   superficie al mismo rosa de texto —el que ya usan los botones primarios— y
+   entonces el blanco da 5.37:1. Es el único cambio de este fichero que se ve a
+   distancia; es un tono más oscuro del mismo rosa, no otro color.
+   --------------------------------------------------------------------------- */
+.nfcFlagship,
+.nfcCaseFeature {
+  background-color: var(--zv-rosa-texto);
+}
+
+.nfcCaseFeature .nfcCaseCopy li > span {
+  color: #fff;
+}
+
+/* ---------------------------------------------------------------------------
+   16. Dos restos sueltos
+   El verde de las tarjetas destacadas (3.23:1) y la numeración de los logos de
+   socios, en gris claro a OCHO píxeles (3.58:1).
+   --------------------------------------------------------------------------- */
+.featuredWorkCard .featuredWorkCopy > span {
+  color: #3d6b0f;
+  font-size: 12px;
+}
+
+.partnerLogoCard:not(.partnerLogoCard-dark) > span {
+  color: #4a453d;      /* 8.2:1 sobre papel; era #827c70 a 3.58:1 */
+  font-size: 11px;
+}
+
+/* La novena tarjeta es `partnerLogoCard-dark`, con fondo #050505. El gris
+   oscuro de arriba la dejaba en 2.14:1. Ahí sólo hace falta el tamaño. */
+.partnerLogoCard-dark > span {
+  font-size: 11px;
+}
+
+/* ---------------------------------------------------------------------------
+   17. Lo último: la numeración y los pasos sobre la banda dorada
+   Rosa #f50078 sobre el dorado compuesto rgb(255,194,68) da 2.54:1. Es el mismo
+   choque cálido-contra-cálido del bloque 14, pero en los pasos numerados de
+   /servicios/ y /nosotros/. Con tinta queda en 11.5:1.
+
+   Se quedan a 10px. Subirlos ayudaría a leerlos, pero van en una rejilla de
+   cuatro columnas dentro de la banda y el riesgo de reflujo no compensa: el
+   problema medible era el contraste, y ese queda resuelto.
+   --------------------------------------------------------------------------- */
+.positioning-steps > div > span,
+.positioning-process article > span {
+  color: #1a1206;
+}

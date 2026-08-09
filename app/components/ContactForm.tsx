@@ -72,8 +72,19 @@ export function ContactForm() {
     <label>Descripción del proyecto<textarea name="message" required minLength={20} rows={6} placeholder="Describe el problema, el proceso actual, los usuarios y el resultado que esperas obtener."/></label>
     <label className="form-honeypot" aria-hidden="true">Sitio web<input name="website" tabIndex={-1} autoComplete="off"/></label>
     <label className="form-consent"><input type="checkbox" name="consent" value="si" required/><span>Acepto que Zivi Dynamics utilice estos datos para responder mi solicitud, conforme a la política de privacidad.</span></label>
-    <button className="btn form-submit" type="submit" disabled={state === "sending"}>{state === "sending" ? "Procesando solicitud…" : "Enviar solicitud"}</button>
-    {state === "ready" && <div className="form-fallback"><p className="form-status success">✓ Tu solicitud quedó lista con todos los datos.</p><p>Pulsa para enviarla por WhatsApp y te respondemos de inmediato.</p><a className="btn secondary" href={fallbackUrl} target="_blank" rel="noreferrer">Enviar por WhatsApp</a></div>}
+    {/* Decia "Enviar solicitud" y NO enviaba: solo preparaba un enlace. El envio
+        de verdad era un segundo boton que aparecia despues, con MENOS peso visual
+        que este. Medido en auditoria: el usuario razonable lee "listo", cierra la
+        pestana, y el mensaje no llega nunca. Ahora el boton dice lo que hace y el
+        formulario avisa de WhatsApp ANTES de pulsar. */}
+    <button className="btn form-submit" type="submit" disabled={state === "sending" || state === "ready"}>{state === "sending" ? "Preparando…" : "Preparar mensaje"}</button>
+    <p className="form-nota">Al continuar se abre <strong>WhatsApp</strong> con todos estos datos ya escritos. Solo tendrás que pulsar enviar.</p>
+    {state === "ready" && fallbackUrl && <div className="form-fallback">
+      <p className="form-status success">Falta un paso: tu mensaje aún no se ha enviado.</p>
+      <p>Pulsa el botón para abrir WhatsApp con la solicitud ya redactada, y envíala desde ahí.</p>
+      <a className="btn form-enviar" href={fallbackUrl} target="_blank" rel="noreferrer">Abrir WhatsApp y enviar →</a>
+    </div>}
+    {state === "ready" && !fallbackUrl && <p className="form-status success">Gracias, hemos recibido tu solicitud.</p>}
     {state === "error" && <p className="form-status error">{message}</p>}
   </form>;
 }

@@ -1,1 +1,7 @@
 package-lock.json
+
+# Artefactos de compilacion — el `out/` lo genera `next build` con output:"export".
+# Estaban sin ignorar: un `git add -A` metia node_modules entero en el repo.
+node_modules/
+.next/
+out/

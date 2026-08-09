@@ -15,6 +15,11 @@ import "./brand-inline.css";
 import "./epic.css";
 import "./visual-system-v2.css";
 import "./nfc-commerce-v3.css";
+// EL ULTIMO A PROPOSITO: correcciones de accesibilidad de la auditoria. Con 15
+// hojas y 33 selectores repetidos en 3+ ficheros, cargar antes seria repetir el
+// error de fixes.css, cuyas reglas de cabecera son codigo muerto porque epic.css
+// carga despues y las pisa.
+import "./accesibilidad.css";
 import { Header } from "./components/Header";
 import { MobileActions } from "./components/MobileActions";
 import { BrandLogo } from "./components/BrandLogo";
