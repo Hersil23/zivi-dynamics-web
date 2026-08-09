@@ -68,44 +68,120 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
 };
 
-const organization = {
+/**
+ * Datos estructurados del sitio, en un solo @graph.
+ *
+ * Los @id conectan las entidades entre si: la Person "founder" apunta a la
+ * Organization y el WebSite declara su publisher. Sin eso, Google ve entidades
+ * sueltas y no puede construir el panel de conocimiento.
+ *
+ * PENDIENTE de datos reales antes de que rinda del todo:
+ *  - streetAddress: sin calle, Google NO puede usar esto para resultados locales.
+ *  - geo: las coordenadas de abajo son el centro de San Antonio de los Altos, no
+ *    la sede. Deben coincidir con lo que se declare en Google Business Profile;
+ *    si no coinciden, la inconsistencia resta en vez de sumar.
+ */
+const orgId = `${siteUrl}/#organizacion`;
+
+const graph = {
   "@context": "https://schema.org",
-  "@type": ["Organization", "ProfessionalService"],
-  name: "Zivi Dynamics C.A.",
-  legalName: "Zivi Dynamics C.A.",
-  taxID: "J-508175123",
-  url: siteUrl,
-  logo: `${siteUrl}/brand/zivi-mark-real-v2.png`,
-  // Con .png: en Vercel /opengraph-image era una funcion que generaba la imagen
-  // al vuelo; aqui es un fichero estatico y sin extension da 404.
-  image: `${siteUrl}/opengraph-image.png`,
-  email: "contacto@zividynamics.com",
-  telephone: "+58 412 706 5848",
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "San Antonio de los Altos",
-    addressRegion: "Miranda",
-    addressCountry: "VE",
-  },
-  sameAs: [
-    "https://www.instagram.com/zivi.ve",
-    "https://linktr.ee/Zividynamics",
-  ],
-  founder: {
-    "@type": "Person",
-    name: "Joswald Alejandro López Luna",
-    jobTitle: "CEO y Fundador",
-  },
-  areaServed: [
-    { "@type": "Country", name: "Venezuela" },
-    { "@type": "Place", name: "Latinoamérica" },
-  ],
-  serviceType: [
-    "Desarrollo de software a la medida",
-    "Aplicaciones móviles",
-    "Sistemas empresariales",
-    "Automatización con inteligencia artificial",
-    "Soluciones NFC para empresas",
+  "@graph": [
+    {
+      "@type": ["Organization", "ProfessionalService", "LocalBusiness"],
+      "@id": orgId,
+      name: "Zivi Dynamics C.A.",
+      alternateName: "Zivi Dynamics",
+      legalName: "Zivi Dynamics C.A.",
+      taxID: "J-508175123",
+      vatID: "J-508175123",
+      url: siteUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteUrl}/brand/zivi-mark-real-v2.png`,
+      },
+      // Con .png: en Vercel /opengraph-image era una funcion que generaba la
+      // imagen al vuelo; aqui es un fichero estatico y sin extension da 404.
+      image: `${siteUrl}/opengraph-image.png`,
+      description:
+        "Empresa venezolana de desarrollo de software, inteligencia artificial y tecnología NFC para empresas e instituciones en Venezuela y Latinoamérica.",
+      email: "contacto@zividynamics.com",
+      telephone: "+58-412-706-5848",
+      priceRange: "$$",
+      address: {
+        "@type": "PostalAddress",
+        // streetAddress: "…",   <-- rellenar si se publica la direccion
+        addressLocality: "San Antonio de los Altos",
+        addressRegion: "Miranda",
+        addressCountry: "VE",
+      },
+      geo: { "@type": "GeoCoordinates", latitude: 10.3556, longitude: -66.9436 },
+      openingHoursSpecification: [
+        {
+          "@type": "OpeningHoursSpecification",
+          dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          opens: "08:00",
+          closes: "17:00",
+        },
+      ],
+      contactPoint: [
+        {
+          "@type": "ContactPoint",
+          contactType: "sales",
+          telephone: "+58-412-706-5848",
+          email: "contacto@zividynamics.com",
+          availableLanguage: ["Spanish"],
+          areaServed: ["VE", "CO", "PA", "EC", "PE", "CL", "MX"],
+        },
+      ],
+      sameAs: [
+        "https://www.instagram.com/zivi.ve",
+        "https://linktr.ee/Zividynamics",
+      ],
+      founder: {
+        "@type": "Person",
+        "@id": `${siteUrl}/nosotros/#joswald`,
+        name: "Joswald Alejandro López Luna",
+        jobTitle: "CEO y Fundador",
+        worksFor: { "@id": orgId },
+      },
+      employee: [
+        {
+          "@type": "Person",
+          "@id": `${siteUrl}/nosotros/#herasi`,
+          name: "Herasi Silva",
+          jobTitle: "Desarrollador web full stack",
+          knowsAbout: ["React", "Next.js", "TypeScript", "Laravel", "Node.js", "MySQL", "MongoDB", "Docker"],
+          worksFor: { "@id": orgId },
+        },
+      ],
+      areaServed: [
+        { "@type": "Country", name: "Venezuela" },
+        { "@type": "Place", name: "Latinoamérica" },
+      ],
+      knowsAbout: [
+        "Desarrollo de software a la medida",
+        "Aplicaciones móviles",
+        "Sistemas empresariales",
+        "Inteligencia artificial aplicada",
+        "Tecnología NFC",
+        "HealthTech",
+      ],
+      serviceType: [
+        "Desarrollo de software a la medida",
+        "Aplicaciones móviles",
+        "Sistemas empresariales",
+        "Automatización con inteligencia artificial",
+        "Soluciones NFC para empresas",
+      ],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${siteUrl}/#sitio`,
+      url: siteUrl,
+      name: "Zivi Dynamics C.A.",
+      inLanguage: "es-VE",
+      publisher: { "@id": orgId },
+    },
   ],
 };
 
@@ -154,7 +230,7 @@ export default function RootLayout({
             en cada visita y ensuciaban la consola sin medir nada. */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organization) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(graph) }}
         />
       </body>
     </html>

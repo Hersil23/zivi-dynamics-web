@@ -6,7 +6,7 @@ const securityHeaders = [
   { key:"X-Frame-Options", value:"DENY" },
   { key:"Permissions-Policy", value:"camera=(), microphone=(), geolocation=(), payment=()" },
   { key:"Strict-Transport-Security", value:"max-age=63072000; includeSubDomains; preload" },
-  { key:"Content-Security-Policy", value:"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://upload.wikimedia.org; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://wa.me https://api.whatsapp.com; upgrade-insecure-requests" },
+  { key:"Content-Security-Policy", value:"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'none'; connect-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests" },
 ];
 
 const nextConfig: NextConfig = {

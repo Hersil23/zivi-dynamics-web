@@ -1,7 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-export const metadata: Metadata = { title:"Inteligencia artificial para empresas", description:"Asistentes, chatbots, automatización, búsqueda documental y análisis integrados con procesos y sistemas empresariales.", alternates:{canonical:"/inteligencia-artificial"} };
+export const metadata: Metadata = {
+  title: { absolute: "Automatización con IA y chatbots en Venezuela | Zivi" },
+  description: "Asistentes, chatbots de WhatsApp, búsqueda documental y automatización de procesos integrados con los sistemas que ya usa tu empresa.",
+  alternates: { canonical: "/inteligencia-artificial" },
+  openGraph: {
+    title: "Automatización con IA y chatbots en Venezuela | Zivi",
+    description: "Asistentes, chatbots de WhatsApp, búsqueda documental y automatización de procesos integrados con los sistemas que ya usa tu empresa.",
+    url: "/inteligencia-artificial",
+  },
+};
 const capabilities=[["Asistentes empresariales","Respuestas y acciones basadas en información, reglas y procesos internos."],["Chatbots de atención","Orientación, captación y soporte inicial en canales digitales."],["Automatización de flujos","Clasificación, seguimiento, notificaciones y tareas repetitivas conectadas."],["Análisis inteligente","Interpretación de información y generación de apoyo para decisiones."],["Búsqueda documental","Consulta contextual de manuales, políticas y bases de conocimiento."],["Integración con sistemas","IA conectada con CRM, inventarios, agendas, formularios y plataformas."]];
 const principles=[["Contexto","La IA debe comprender información relevante y límites definidos."],["Seguridad","Los datos, accesos y responsabilidades se diseñan desde el inicio."],["Validación","Las respuestas y acciones críticas requieren controles apropiados."],["Medición","Definimos indicadores para comprobar productividad y valor generado."]];
 

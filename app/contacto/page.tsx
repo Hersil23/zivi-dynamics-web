@@ -2,9 +2,14 @@ import type { Metadata } from "next";
 import { ContactForm } from "../components/ContactForm";
 
 export const metadata: Metadata = {
-  title: "Contacto y cotización",
-  description: "Solicita una propuesta para aplicaciones, plataformas web, sistemas, inteligencia artificial o tecnología NFC.",
+  title: { absolute: "Cotiza tu proyecto de software | Zivi Dynamics" },
+  description: "Cuéntanos qué necesitas digitalizar. Respondemos por WhatsApp al +58 412 706 5848 con una propuesta ajustada a tu operación.",
   alternates: { canonical: "/contacto" },
+  openGraph: {
+    title: "Cotiza tu proyecto de software | Zivi Dynamics",
+    description: "Cuéntanos qué necesitas digitalizar. Respondemos por WhatsApp al +58 412 706 5848 con una propuesta ajustada a tu operación.",
+    url: "/contacto",
+  },
 };
 
 export default function ContactPage() {

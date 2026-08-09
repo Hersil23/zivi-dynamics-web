@@ -1,7 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-export const metadata: Metadata = { title:"Soluciones digitales por industria", description:"Tecnología adaptada a salud, asociaciones profesionales, seguros, movilidad, restaurantes, eventos y empresas en Venezuela.", alternates:{canonical:"/soluciones"} };
+export const metadata: Metadata = {
+  title: { absolute: "Software por sector: salud, seguros y comercio | Zivi" },
+  description: "Software diseñado por sector: salud, asociaciones profesionales, seguros, movilidad, restaurantes y eventos. Casos reales operando en Venezuela.",
+  alternates: { canonical: "/soluciones" },
+  openGraph: {
+    title: "Software por sector: salud, seguros y comercio | Zivi",
+    description: "Software diseñado por sector: salud, asociaciones profesionales, seguros, movilidad, restaurantes y eventos. Casos reales operando en Venezuela.",
+    url: "/soluciones",
+  },
+};
 const sectors=[
   ["Salud y medicina","Sociedades médicas, consultorios, jornadas, pacientes y eventos científicos.",["Membresías y colegiatura","Jornadas de salud","Gestión de pacientes","Eventos y acreditación"]],
   ["Asociaciones profesionales","Afiliación, pagos, solvencias, directorios, documentos y comunicación con miembros.",["Registro de afiliados","Estados de cuenta","Eventos","Panel administrativo"]],

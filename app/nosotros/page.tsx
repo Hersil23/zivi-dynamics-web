@@ -2,7 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BrandLogo } from "../components/BrandLogo";
 
-export const metadata: Metadata = { title:"Nosotros", description:"Conoce la visión, el liderazgo y los principios de Zivi Dynamics C.A., empresa venezolana de desarrollo tecnológico.", alternates:{canonical:"/nosotros"} };
+export const metadata: Metadata = {
+  title: { absolute: "Zivi Dynamics C.A. | Empresa de software en Venezuela" },
+  description: "Empresa venezolana de desarrollo de software, IA y NFC con sede en San Antonio de los Altos, Miranda. RIF J-508175123. Conoce al equipo y su trayectoria.",
+  alternates: { canonical: "/nosotros" },
+  openGraph: {
+    title: "Zivi Dynamics C.A. | Empresa de software en Venezuela",
+    description: "Empresa venezolana de desarrollo de software, IA y NFC con sede en San Antonio de los Altos, Miranda. RIF J-508175123. Conoce al equipo y su trayectoria.",
+    url: "/nosotros",
+  },
+};
 
 export default function AboutPage(){return <>
   <section className="pageHero about-position-hero"><div className="container"><span className="eyebrow">Zivi Dynamics C.A.</span><h1>Tecnología venezolana con visión de alcance mundial.</h1><p className="lead">Convertimos ideas y procesos empresariales en aplicaciones, plataformas, automatizaciones y experiencias digitales modernas.</p></div></section>

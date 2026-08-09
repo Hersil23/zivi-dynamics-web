@@ -5,12 +5,12 @@ import { ExperienceLayer } from "../components/ExperienceLayer";
 import { projects } from "../lib/projects";
 
 export const metadata: Metadata = {
-  title: "Portafolio de productos digitales",
-  description: "Casos reales de software, HealthTech, membresías, seguros, NFC, gastronomía y comercio desarrollados por Zivi Dynamics.",
+  title: { absolute: "Proyectos: apps, sistemas y NFC en Venezuela | Zivi" },
+  description: "20 proyectos que ya operan: HealthTech, membresías, seguros, NFC, comercio y gastronomía. Software venezolano en producción, no maquetas.",
   alternates: { canonical: "/portafolio" },
   openGraph: {
-    title: "Trabajo real de Zivi Dynamics",
-    description: "Productos digitales que ya operan en salud, seguros, movilidad, servicios y comercio.",
+    title: "Proyectos: apps, sistemas y NFC en Venezuela | Zivi",
+    description: "20 proyectos que ya operan: HealthTech, membresías, seguros, NFC, comercio y gastronomía. Software venezolano en producción, no maquetas.",
     url: "/portafolio",
   },
 };

@@ -2,7 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { resources } from "../lib/resources";
 
-export const metadata: Metadata = { title:"Recursos sobre transformación digital", description:"Guías de Zivi Dynamics sobre digitalización, automatización, desarrollo de software, inteligencia artificial y tecnología NFC.", alternates:{canonical:"/recursos"} };
+export const metadata: Metadata = {
+  title: { absolute: "Guías de tecnología para empresas | Zivi Dynamics" },
+  description: "Guías prácticas sobre digitalización, automatización de procesos y tecnología NFC, escritas desde proyectos reales en Venezuela.",
+  alternates: { canonical: "/recursos" },
+  openGraph: {
+    title: "Guías de tecnología para empresas | Zivi Dynamics",
+    description: "Guías prácticas sobre digitalización, automatización de procesos y tecnología NFC, escritas desde proyectos reales en Venezuela.",
+    url: "/recursos",
+  },
+};
 
 export default function ResourcesPage(){return <>
   <section className="pageHero"><div className="container"><span className="eyebrow">Centro de recursos</span><h1>Ideas prácticas para tomar mejores decisiones tecnológicas.</h1><p className="lead">Contenido dirigido a empresas e instituciones que buscan digitalizar procesos, automatizar operaciones y construir productos sostenibles.</p></div></section>

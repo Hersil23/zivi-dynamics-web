@@ -5,23 +5,12 @@ import { ExperienceLayer } from "../components/ExperienceLayer";
 import { NfcSignalDemo } from "../components/NfcSignalDemo";
 
 export const metadata: Metadata = {
-  title: "Soluciones y productos NFC para empresas en Venezuela",
-  description: "Diseño de carnets inteligentes, lanyards, portacarnets, tarjetas, llaveros y puntos NFC conectados con accesos, perfiles, pólizas, WhatsApp, analítica y sistemas empresariales.",
-  keywords: [
-    "NFC Venezuela",
-    "tarjetas NFC personalizadas",
-    "carnets NFC personalizados",
-    "lanyards personalizados",
-    "credenciales NFC para eventos",
-    "llaveros NFC",
-    "stickers NFC",
-    "menú NFC",
-    "soluciones NFC para empresas",
-  ],
+  title: { absolute: "Tarjetas y soluciones NFC en Venezuela | Zivi" },
+  description: "Tarjetas, carnets, llaveros y credenciales NFC personalizados en Venezuela, con la plataforma y la analítica que ocurre después del toque. Cotiza por WhatsApp.",
   alternates: { canonical: "/nfc" },
   openGraph: {
-    title: "Zivi NFC — Del objeto físico a una acción digital",
-    description: "Productos NFC personalizados con la plataforma, automatización y analítica que ocurre después del toque.",
+    title: "Tarjetas y soluciones NFC en Venezuela | Zivi",
+    description: "Tarjetas, carnets, llaveros y credenciales NFC personalizados en Venezuela, con la plataforma y la analítica que ocurre después del toque. Cotiza por WhatsApp.",
     url: "/nfc",
   },
 };

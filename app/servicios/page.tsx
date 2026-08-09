@@ -1,7 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-export const metadata: Metadata = { title:"Servicios de desarrollo de software", description:"Aplicaciones móviles, plataformas web, sistemas empresariales, software personalizado, inteligencia artificial y tecnología NFC en Venezuela.", alternates:{canonical:"/servicios"} };
+export const metadata: Metadata = {
+  title: { absolute: "Desarrollo de software a la medida en Venezuela | Zivi" },
+  description: "Apps móviles, plataformas web, sistemas empresariales e integraciones con IA para empresas en Venezuela. Diagnóstico previo y soporte incluido.",
+  alternates: { canonical: "/servicios" },
+  openGraph: {
+    title: "Desarrollo de software a la medida en Venezuela | Zivi",
+    description: "Apps móviles, plataformas web, sistemas empresariales e integraciones con IA para empresas en Venezuela. Diagnóstico previo y soporte incluido.",
+    url: "/servicios",
+  },
+};
 const services=[
   ["01","Aplicaciones móviles","Productos para Android, iOS y PWA con flujos adaptados a usuarios, dispositivos y operación real.",["Experiencia responsive","Notificaciones e integraciones","Panel administrativo","Publicación y soporte"]],
   ["02","Páginas y plataformas web","Sitios corporativos, portales, catálogos y sistemas web rápidos, seguros y preparados para posicionamiento.",["SEO técnico","Diseño responsive","Gestión de contenido","Analítica y conversión"]],

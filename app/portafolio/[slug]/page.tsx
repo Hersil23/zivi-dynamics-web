@@ -40,7 +40,10 @@ export async function generateMetadata({
   if (!project) return {};
 
   return {
-    title: project.name,
+    // `name` a secas no posiciona: nadie busca "CitaClick". El seoTitle anade
+    // el descriptor generico que si se teclea, y va en `absolute` para saltarse
+    // la plantilla "%s | Zivi Dynamics" y controlar los 60 caracteres.
+    title: { absolute: project.seoTitle },
     description: project.summary,
     alternates: { canonical: `/portafolio/${project.slug}` },
     openGraph: {
@@ -48,9 +51,12 @@ export async function generateMetadata({
       description: project.summary,
       type: "article",
       url: `/portafolio/${project.slug}`,
+      // Con width/height declarados: son capturas de pantalla, no 1200x630, y
+      // sin dimensiones WhatsApp —que es EL canal de este negocio— las recorta
+      // mal o no las muestra.
       images: project.image
         ? [{ url: project.image, alt: project.imageAlt ?? project.name }]
-        : undefined,
+        : [{ url: "/opengraph-image.png", width: 1200, height: 630, alt: project.name }],
     },
   };
 }
@@ -71,6 +77,18 @@ export default async function ProjectPage({
 
   return (
     <>
+      {/* Migas de pan: Google las muestra en lugar de la URL en el SERP, y en
+          rutas de tres niveles como esta eso mejora el clic. El ultimo elemento
+          va SIN `item` a proposito: es la pagina actual. */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Inicio", item: "https://zividynamics.com/" },
+          { "@type": "ListItem", position: 2, name: "Portafolio", item: "https://zividynamics.com/portafolio/" },
+          { "@type": "ListItem", position: 3, name: project.name },
+        ],
+      }) }} />
       <ExperienceLayer />
       <article className={`caseEpic accent-${project.accent}`}>
         <header className="caseEpicHero">
@@ -123,7 +141,7 @@ export default async function ProjectPage({
           <div className="container caseEpicStoryGrid">
             <div data-reveal>
               <span className="caseStoryLabel">01 / EL CONTEXTO</span>
-              <h2>Una necesidad operativa, no una excusa para diseñar pantallas.</h2>
+              <h2>El reto en {project.sector.toLowerCase()}</h2>
             </div>
             <div data-reveal>
               <p>{project.challenge}</p>
@@ -139,7 +157,7 @@ export default async function ProjectPage({
             <div className="editorialHeading" data-reveal>
               <div>
                 <span className="epicEyebrow">Arquitectura de valor</span>
-                <h2>Lo que hace que el sistema <em>funcione.</em></h2>
+                <h2>Qué hace <em>{project.name}</em> exactamente</h2>
               </div>
               <p>
                 Cada capacidad responde a una parte del proceso. Juntas forman
@@ -214,7 +232,7 @@ export default async function ProjectPage({
             <h2>
               {isLider
                 ? "Servicios disponibles desde las llaves. Operación organizada desde una plataforma."
-                : "Un proceso disperso convertido en una experiencia clara y preparada para evolucionar."}
+                : `Lo que ${project.name} resolvió`}
             </h2>
           </div>
         </section>

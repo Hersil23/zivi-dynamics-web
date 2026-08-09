@@ -1,6 +1,9 @@
 export type Project = {
   slug: string;
   name: string;
+  /** Titulo para buscadores. `name` a secas no sirve: nadie teclea "CitaClick".
+   *  Patron: {marca}: {que es en terminos que se buscan} | Caso Zivi */
+  seoTitle: string;
   category: string;
   summary: string;
   challenge: string;
@@ -17,6 +20,7 @@ export type Project = {
 export const projects: Project[] = [
   {
     slug: "soveuro",
+    seoTitle: "Sociedad Venezolana de Urología | Caso Zivi Dynamics",
     name: "Sociedad Venezolana de Urología",
     category: "Salud · Web institucional",
     sector: "Salud",
@@ -32,6 +36,7 @@ export const projects: Project[] = [
   },
   {
     slug: "soveuroapp",
+    seoTitle: "SoveuroApp: membresías y eventos médicos | Caso Zivi",
     name: "SoveuroApp",
     category: "Salud · Membresías y eventos",
     sector: "Salud",
@@ -47,6 +52,7 @@ export const projects: Project[] = [
   },
   {
     slug: "sociedad-venezolana-cardiologia",
+    seoTitle: "Sociedad Venezolana de Cardiología | Caso Zivi",
     name: "Sociedad Venezolana de Cardiología",
     category: "Salud · Colegiatura",
     sector: "Salud",
@@ -62,6 +68,7 @@ export const projects: Project[] = [
   },
   {
     slug: "uroapp",
+    seoTitle: "UroApp: registro clínico uro-oncológico | Caso Zivi",
     name: "UroApp",
     category: "HealthTech · Uro-oncología",
     sector: "Salud",
@@ -76,6 +83,7 @@ export const projects: Project[] = [
   },
   {
     slug: "congreso-urologia-2026",
+    seoTitle: "Congreso Venezolano de Urología 2026 | Caso Zivi",
     name: "Congreso Venezolano de Urología 2026",
     category: "Salud · Experiencia de evento",
     sector: "Salud",
@@ -91,6 +99,7 @@ export const projects: Project[] = [
   },
   {
     slug: "fc-care-ai",
+    seoTitle: "FC Care AI: app de adherencia con IA | Caso Zivi",
     name: "FC Care AI",
     category: "HealthTech · IA terapéutica",
     sector: "Salud",
@@ -105,6 +114,7 @@ export const projects: Project[] = [
   },
   {
     slug: "zoriapp",
+    seoTitle: "ZoriApp: PWA para jornadas de despistaje | Caso Zivi",
     name: "ZoriApp",
     category: "HealthTech · Jornadas masivas",
     sector: "Salud",
@@ -120,6 +130,7 @@ export const projects: Project[] = [
   },
   {
     slug: "pacigest-plus",
+    seoTitle: "PaciGest Plus: software para consultorios | Caso Zivi",
     name: "PaciGest Plus",
     category: "HealthTech · Consultorios",
     sector: "Salud",
@@ -135,6 +146,7 @@ export const projects: Project[] = [
   },
   {
     slug: "citaclick",
+    seoTitle: "CitaClick: sistema de citas y reservas | Caso Zivi",
     name: "CitaClick",
     category: "Servicios · Reservas",
     sector: "Servicios",
@@ -147,6 +159,7 @@ export const projects: Project[] = [
   },
   {
     slug: "mesaclick",
+    seoTitle: "MesaClick: menú digital para restaurantes | Caso Zivi",
     name: "MesaClick",
     category: "Gastronomía · Experiencia digital",
     sector: "Comercio",
@@ -162,6 +175,7 @@ export const projects: Project[] = [
   },
   {
     slug: "lider-seguros-nfc",
+    seoTitle: "Líder Seguros: llaveros NFC y portal | Caso Zivi",
     name: "Líder Seguros NFC",
     category: "Seguros · NFC y software",
     sector: "Seguros",
@@ -177,6 +191,7 @@ export const projects: Project[] = [
   },
   {
     slug: "adium-carnet-inteligente",
+    seoTitle: "Adium: carnet NFC y lanyard corporativo | Caso Zivi",
     name: "Carnet Inteligente Adium",
     category: "NFC · Identificación corporativa",
     sector: "Empresas",
@@ -191,6 +206,7 @@ export const projects: Project[] = [
   },
   {
     slug: "lider-seguros-app",
+    seoTitle: "Líder Seguros App: póliza RCV móvil | Caso Zivi",
     name: "Líder de Seguros App",
     category: "InsurTech · Aplicación para asegurados",
     sector: "Seguros",
@@ -205,6 +221,7 @@ export const projects: Project[] = [
   },
   {
     slug: "elite-links",
+    seoTitle: "Elite Links: portal de servicios vehiculares | Caso Zivi",
     name: "Elite Links",
     category: "Movilidad · Portal inteligente",
     sector: "Movilidad",
@@ -220,6 +237,7 @@ export const projects: Project[] = [
   },
   {
     slug: "guia-kupai",
+    seoTitle: "Guía Kupai: directorio comercial digital | Caso Zivi",
     name: "Guía Kupai",
     category: "Comercio · Directorio digital",
     sector: "Comercio",
@@ -235,6 +253,7 @@ export const projects: Project[] = [
   },
   {
     slug: "credired",
+    seoTitle: "CrediRed: ventas, créditos e inventario | Caso Zivi",
     name: "CrediRed",
     category: "FinTech · Ventas y créditos",
     sector: "Comercio",
@@ -248,6 +267,7 @@ export const projects: Project[] = [
   },
   {
     slug: "ventaclick",
+    seoTitle: "VentaClick: inventario y ventas para tiendas | Caso Zivi",
     name: "VentaClick",
     category: "RetailTech · Inventario",
     sector: "Comercio",
@@ -261,6 +281,7 @@ export const projects: Project[] = [
   },
   {
     slug: "paycopy",
+    seoTitle: "PayCopy: enlaces de cobro Pago Móvil y Zelle | Caso Zivi",
     name: "PayCopy",
     category: "FinTech · Enlaces de cobro",
     sector: "Finanzas",
@@ -274,6 +295,7 @@ export const projects: Project[] = [
   },
   {
     slug: "dr-jackson-briones",
+    seoTitle: "Dr. Jackson Briones: web médica y SEO | Caso Zivi",
     name: "Dr. Jackson Briones",
     category: "Salud · Presencia profesional",
     sector: "Salud",
@@ -287,6 +309,7 @@ export const projects: Project[] = [
   },
   {
     slug: "ads-restauro",
+    seoTitle: "ADS Restauro: landing de captación | Caso Zivi",
     name: "ADS Restauro",
     category: "Educación · Conversión digital",
     sector: "Educación",

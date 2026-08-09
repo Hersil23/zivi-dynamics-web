@@ -26,7 +26,24 @@ ErrorDocument 404 /404.html
   Header always set X-Frame-Options "DENY"
   Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
   Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://upload.wikimedia.org; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://wa.me https://api.whatsapp.com; upgrade-insecure-requests"
+  # CSP ajustada tras auditoria. Se quitaron cinco directivas comprobadas como
+  # muertas contra la salida real: upload.wikimedia.org (0 referencias, las
+  # imagenes se descargaron a /media/), data: y blob: en img-src (0 usos),
+  # font-src (0 @font-face, el sitio usa fuentes del sistema) y form-action
+  # (el unico <form> no tiene action y hace preventDefault; el enlace de
+  # WhatsApp es un <a>, que form-action no gobierna).
+  #
+  # Se anaden object-src y frame-src a 'none': default-src 'self' los dejaba
+  # en 'self', no bloqueados.
+  #
+  # 'unsafe-inline' en script-src SE QUEDA y no es una vulnerabilidad aqui: no
+  # hay servidor, ni parametros de URL leidos por el cliente, ni innerHTML, ni
+  # eval. Quitarlo exigiria 235 hashes = una cabecera de 13 KB que hay que
+  # regenerar en cada build, y si se desincroniza el sitio queda inerte sin avisar.
+  #
+  # connect-src 'self' es imprescindible: el router de Next descarga los .txt
+  # del payload RSC por fetch al navegar entre paginas.
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'none'; connect-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
   Header unset X-Powered-By
 </IfModule>
 
@@ -64,13 +81,34 @@ ErrorDocument 404 /404.html
 # ---------------------------------------------------------------------------
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteCond %{HTTPS} !=on
-  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  # Un solo salto: fuerza https y quita www a la vez. En dos reglas separadas,
+  # http://www.dominio/pagina hacia 301 dos veces antes de que mod_dir anadiera
+  # la barra final — tres saltos por URL, y cada uno diluye y gasta rastreo.
+  RewriteCond %{HTTPS} !=on [OR]
   RewriteCond %{HTTP_HOST} ^www\.zividynamics\.com$ [NC]
-  RewriteRule ^(.*)$ https://zividynamics.com/$1 [L,R=301]
+  RewriteRule ^ https://zividynamics.com%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# El HTML de Next lleva el payload RSC inline y duplica todo el contenido en
+# JSON: sin comprimir se envian 3-4 veces mas bytes de los necesarios.
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/javascript \
+    application/javascript application/json application/xml \
+    image/svg+xml application/manifest+json
 </IfModule>
 
 # No servir ficheros internos del build ni copias de seguridad
-<FilesMatch "^(\.env.*|.*\.(bak|old|orig|log|zip|tar|gz))$">
+# (?i) = sin distinguir mayusculas: la version anterior dejaba pasar /COPIA.ZIP.
+# Se anaden las extensiones que aparecen de verdad en despliegues cPanel.
+<FilesMatch "(?i)^(\.env.*|.*\.(bak|old|orig|save|log|map|sql|zip|tar|gz|tgz|bz2|7z|rar|sh|swp)|.*~)$">
   Require all denied
 </FilesMatch>
+
+# Los .txt del payload RSC devuelven el mismo contenido que el HTML y son
+# indexables. NO se pueden bloquear —el router de Next los usa para navegar—,
+# pero si marcarlos para que Google no los indexe como paginas duplicadas.
+<IfModule mod_headers.c>
+  <FilesMatch "(?i)^(index\.txt|__next\..*\.txt)$">
+    Header always set X-Robots-Tag "noindex, nofollow"
+  </FilesMatch>
+</IfModule>
