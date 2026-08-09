@@ -7,16 +7,48 @@ export function ContactForm() {
   const [fallbackUrl, setFallbackUrl] = useState("");
   const [message, setMessage] = useState("");
 
+  // El sitio se sirve como HTML estático desde cPanel, así que no hay servidor
+  // que atienda /api/contacto. Tampoco hace falta: aquella ruta no mandaba
+  // ningún correo — validaba los campos y devolvía un enlace de wa.me. Todo eso
+  // se hace aquí igual de bien, porque lo único que sale de este formulario es
+  // un enlace que la persona tiene que pulsar. No hay nada que proteger.
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setState("sending");
     setMessage("");
     const form = event.currentTarget;
     try {
-      const response = await fetch("/api/contacto", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(Object.fromEntries(new FormData(form).entries())) });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error || "No pudimos procesar la solicitud.");
-      setFallbackUrl(result.whatsappUrl);
+      const raw = Object.fromEntries(new FormData(form).entries()) as Record<string, string>;
+      const limpiar = (v: unknown, max = 2000) => typeof v === "string" ? v.trim().slice(0, max) : "";
+
+      // Trampa para robots: es un campo oculto. Si viene relleno, lo escribió un
+      // bot. Se responde como si todo hubiera ido bien y no se hace nada.
+      if (limpiar(raw.website)) { setState("ready"); setFallbackUrl(""); return; }
+
+      const d = {
+        name: limpiar(raw.name, 120), company: limpiar(raw.company, 160),
+        email: limpiar(raw.email, 180), phone: limpiar(raw.phone, 80),
+        service: limpiar(raw.service, 120), budget: limpiar(raw.budget, 80),
+        startDate: limpiar(raw.startDate, 80), message: limpiar(raw.message, 3000),
+      };
+      const correoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email);
+      if (!d.name || !correoValido || !d.phone || !d.service || d.message.length < 20) {
+        throw new Error("Revisa los campos obligatorios y describe el proyecto con mayor detalle.");
+      }
+
+      const texto = [
+        "Hola Zivi Dynamics, deseo solicitar una cotización.", "",
+        `Nombre: ${d.name}`,
+        `Empresa: ${d.company || "No indicada"}`,
+        `Correo: ${d.email}`,
+        `Teléfono: ${d.phone}`,
+        `Tipo de proyecto: ${d.service}`,
+        `Presupuesto: ${d.budget || "Por definir"}`,
+        `Inicio estimado: ${d.startDate || "Por definir"}`,
+        `Descripción: ${d.message}`,
+      ].join("\n");
+
+      setFallbackUrl(`https://wa.me/584127065848?text=${encodeURIComponent(texto)}`);
       setState("ready");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Ocurrió un error inesperado.");

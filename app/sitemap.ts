@@ -1,6 +1,10 @@
 import type { MetadataRoute } from "next";
 import { projects } from "./lib/projects";
 
+// Con output:"export" estos metadatos se generan en compilacion, no por peticion.
+// Sin esta linea Next aborta el build: no sabe si la ruta es estatica o dinamica.
+export const dynamic = "force-static";
+
 const resourceSlugs = [
   "digitalizacion-empresas-venezuela",
   "automatizacion-procesos-empresariales",
@@ -8,7 +12,7 @@ const resourceSlugs = [
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://zivi-dynamics-web.vercel.app";
+  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://zividynamics.com";
   const pages = [
     "",
     "/servicios",

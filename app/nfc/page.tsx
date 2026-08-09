@@ -98,7 +98,7 @@ const serviceSchema = {
   provider: {
     "@type": "Organization",
     name: "Zivi Dynamics C.A.",
-    url: "https://zivi-dynamics-web.vercel.app",
+    url: "https://zividynamics.com",
   },
   areaServed: ["Venezuela", "Latinoamérica"],
   description: "Carnets inteligentes, lanyards, portacarnets, tarjetas, llaveros, stickers y puntos NFC conectados con accesos, perfiles, portales, pólizas, analítica y sistemas empresariales.",

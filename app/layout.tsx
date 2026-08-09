@@ -1,7 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import "./phase1.css";
 import "./phase2.css";
@@ -21,7 +19,7 @@ import { Header } from "./components/Header";
 import { MobileActions } from "./components/MobileActions";
 import { BrandLogo } from "./components/BrandLogo";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://zivi-dynamics-web.vercel.app";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://zividynamics.com";
 
 export const viewport: Viewport = {
   themeColor: "#080808",
@@ -79,7 +77,7 @@ const organization = {
   url: siteUrl,
   logo: `${siteUrl}/brand/zivi-mark-real-v2.png`,
   image: `${siteUrl}/opengraph-image`,
-  email: "ziviagency@gmail.com",
+  email: "contacto@zividynamics.com",
   telephone: "+58 412 706 5848",
   address: {
     "@type": "PostalAddress",
@@ -140,7 +138,7 @@ export default function RootLayout({
                 Todos nuestros enlaces <span>↗</span>
               </a>
               <a href="https://wa.me/584127065848">+58 412 706 5848 ↗</a>
-              <a href="mailto:ziviagency@gmail.com">ziviagency@gmail.com</a>
+              <a href="mailto:contacto@zividynamics.com">contacto@zividynamics.com</a>
               <a href="https://www.instagram.com/zivi.ve">@zivi.ve ↗</a>
               <p>RIF: J-508175123</p>
               <Link href="/politica-de-privacidad">Privacidad</Link>
@@ -149,8 +147,9 @@ export default function RootLayout({
           </div>
         </footer>
         <MobileActions />
-        <Analytics />
-        <SpeedInsights />
+        {/* Se quitaron <Analytics /> y <SpeedInsights /> de Vercel: sus scripts
+            se sirven desde /_vercel/, que solo existe en Vercel. Aqui daban 404
+            en cada visita y ensuciaban la consola sin medir nada. */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organization) }}

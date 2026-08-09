@@ -1,0 +1,76 @@
+# NO editar la copia de out/: se borra en cada compilación. La buena es esta,
+# en public/, que Next copia a out/ automáticamente en cada build.
+# zividynamics.com — sitio estático (Next.js exportado)
+#
+# Las cabeceras de seguridad viven aquí y no en next.config.ts: con
+# output:"export" Next IGNORA su bloque headers() sin decir nada. La constante
+# securityHeaders sigue en el config como fuente de verdad; si se toca allí, hay
+# que reflejarlo aquí. Es el error clásico de este montaje — el sitio parece
+# igual y se queda sin ninguna protección.
+
+# ---------------------------------------------------------------------------
+# No listar carpetas. Sin esto, entrar a una carpeta sin index muestra el
+# contenido entero, que es lo que se veía al abrir el dominio recién creado.
+# ---------------------------------------------------------------------------
+Options -Indexes
+
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+
+# ---------------------------------------------------------------------------
+# Cabeceras de seguridad
+# ---------------------------------------------------------------------------
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "DENY"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+  Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://upload.wikimedia.org; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://wa.me https://api.whatsapp.com; upgrade-insecure-requests"
+  Header unset X-Powered-By
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# Caché
+#
+# Los ficheros de /_next/static llevan un hash en el nombre: cuando cambia el
+# contenido cambia el nombre, así que se pueden cachear para siempre sin riesgo.
+# El HTML NO: si se cachea, un cambio en la web tarda días en verse.
+# ---------------------------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 hour"
+  ExpiresByType image/png                "access plus 1 month"
+  ExpiresByType image/jpeg               "access plus 1 month"
+  ExpiresByType image/svg+xml            "access plus 1 month"
+  ExpiresByType image/webp               "access plus 1 month"
+  ExpiresByType font/woff2               "access plus 1 year"
+  ExpiresByType text/html                "access plus 0 seconds"
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
+<IfModule mod_headers.c>
+  <If "%{REQUEST_URI} =~ m#^/_next/static/#">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </If>
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# www → sin www, y siempre https
+# ---------------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  RewriteCond %{HTTP_HOST} ^www\.zividynamics\.com$ [NC]
+  RewriteRule ^(.*)$ https://zividynamics.com/$1 [L,R=301]
+</IfModule>
+
+# No servir ficheros internos del build ni copias de seguridad
+<FilesMatch "^(\.env.*|.*\.(bak|old|orig|log|zip|tar|gz))$">
+  Require all denied
+</FilesMatch>
